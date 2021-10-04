@@ -7,16 +7,11 @@
  * @flow strict-local
  */
 
-import React, { useEffect } from 'react';
-import { Platform, ActivityIndicator, Alert } from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
-import { Provider } from 'react-redux';
-// import { PersistGate } from 'redux-persist/es/integration/react';
-import * as RNIap from 'react-native-iap';
-import NetInfo from '@react-native-community/netinfo';
-
-import AuthStack from './src/navigation/AuthStack';
-import configureStore from './src/store';
+import React, { useEffect } from "react";
+import { Platform, ActivityIndicator, Alert } from "react-native";
+import SplashScreen from "react-native-splash-screen";
+import * as RNIap from "react-native-iap";
+import NetInfo from "@react-native-community/netinfo";
 
 // import RNIap, {
 //   purchaseErrorListener,
@@ -25,21 +20,19 @@ import configureStore from './src/store';
 //   PurchaseError,
 // } from 'react-native-iap';
 
-import { commonApiAxios } from './src/utils';
 import {
   CLIENT_ID,
   CLIENT_SECRET,
   REFRESH_TOKEN,
   NetworkCheck,
-} from './src/utils/Constant';
-
-const { store } = configureStore();
+} from "./src/utils/Constant";
+import Routes from "./src/navigation";
 
 const App: () => React$Node = () => {
   useEffect(async () => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log('Connection type', state.type);
-      console.log('Is connected?', state.isConnected);
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
       NetworkCheck.isConnected = state.isConnected;
     });
     // await RNIap.initConnection();
@@ -150,7 +143,7 @@ const App: () => React$Node = () => {
     productId,
     purchaseToken,
     accessToken,
-    isSub,
+    isSub
   ) => {
     try {
       const result = await RNIap.validateReceiptAndroid(
@@ -158,20 +151,14 @@ const App: () => React$Node = () => {
         productId,
         purchaseToken,
         accessToken,
-        isSub,
+        isSub
       );
       return result;
     } catch (err) {
-      console.error('getValidateReceiptAndroid==' + JSON.stringify(err)); // standardized err.code and err.message available
+      console.error("getValidateReceiptAndroid==" + JSON.stringify(err)); // standardized err.code and err.message available
     }
   };
-  return (
-    <Provider store={store}>
-      {/* <PersistGate loading={<ActivityIndicator />} persistor={persistor}> */}
-      <AuthStack />
-      {/* </PersistGate> */}
-    </Provider>
-  );
+  return <Routes />;
 };
 
 export default App;
