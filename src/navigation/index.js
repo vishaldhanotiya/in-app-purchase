@@ -3,21 +3,22 @@ import "react-native-gesture-handler";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import NavigationService from "./NavigationService";
+import MyTabs from "../containers/MyTabs";
 import Splash from "../containers/Splash";
-import IAP from "../containers/IAP";
 import SignIn from "../containers/SignIn";
+import Profile from "../containers/Profile";
 
 const Stack = createStackNavigator();
 
 const MainStack = () => {
   return (
     <Stack.Navigator
-      initialRouteName="Splash"
+      initialRouteName="SignIn"
       screenOptions={{ headerShown: false }}
-      component={Splash}
     >
       <Stack.Screen name="SignIn" component={SignIn} />
-      <Stack.Screen name="IAP" component={IAP} />
+      <Stack.Screen name="MyTabs" component={MyTabs} />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
 };

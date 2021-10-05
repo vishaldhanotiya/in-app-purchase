@@ -10,6 +10,8 @@ import {
 
 import * as RNIap from "react-native-iap";
 import React, { useState, useEffect } from "react";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import database from "@react-native-firebase/database";
 
 // App Bundle > com.dooboolab.test
 const itemSkus = Platform.select({
@@ -28,78 +30,117 @@ const itemSubs = Platform.select({
 
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
-
+import auth from "@react-native-firebase/auth";
+let user = null,
+  productPrice = "";
 const IAP = () => {
   const [productList, setProductList] = useState([]);
+  // const [productPrice, setProductPrice] = useState("");
   const [receipt, setReceipt] = useState("");
+  const [uid, setUid] = useState("");
   const [availableItemsMessage, setAvailableItemsMessage] = useState("");
 
-  // useEffect(async () => {
-  //   try {
-  //     await RNIap.initConnection();
-  //     getPurchaseHistory();
+  useEffect(() => {
+    user = auth().currentUser;
 
-  //     if (Platform.OS === 'android') {
-  //       await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
-  //     } else {
-  //       await RNIap.clearTransactionIOS();
-  //     }
-  //   } catch (err) {
-  //     console.warn(err.code, err.message);
-  //   }
+    if (user) {
+      //NavigationService.navigateToClearStack("MyTabs");
+      setUid(user.uid);
 
-  //   purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
-  //     async (purchase) => {
-  //       console.info('purchase', purchase);
-  //       const receipt = purchase.transactionReceipt
-  //         ? purchase.transactionReceipt
-  //         : purchase.originalJson;
-  //       console.info(receipt);
-  //       if (receipt) {
-  //         try {
-  //           const ackResult = await RNIap.finishTransaction(purchase);
-  //           console.info('ackResult', ackResult);
-  //         } catch (ackErr) {
-  //           console.warn('ackErr', ackErr);
-  //         }
-  //         setReceipt(receipt);
+      console.log("User Data: ", user);
+    }
+    initialConfiguration();
+    return () => {
+      endConnection();
+    };
+  }, []);
 
-  //         setTimeout(() => {
-  //           goNext();
-  //         }, 5000);
-  //       }
-  //     },
-  //   );
+  const initialConfiguration = async () => {
+    try {
+      await RNIap.initConnection();
+      // getPurchaseHistory();
+      getItems();
+      if (Platform.OS === "android") {
+        await RNIap.flushFailedPurchasesCachedAsPendingAndroid();
+      } else {
+        await RNIap.clearTransactionIOS();
+      }
+    } catch (err) {
+      console.warn(err.code, err.message);
+    }
 
-  //   purchaseErrorSubscription = RNIap.purchaseErrorListener((error) => {
-  //     console.log('purchaseErrorListener', error);
-  //     Alert.alert('purchase error', JSON.stringify(error));
-  //   });
-  //   return () => {
-  //     if (purchaseUpdateSubscription) {
-  //       purchaseUpdateSubscription.remove();
-  //       purchaseUpdateSubscription = null;
-  //     }
-  //     if (purchaseErrorSubscription) {
-  //       purchaseErrorSubscription.remove();
-  //       purchaseErrorSubscription = null;
-  //     }
-  //     RNIap.endConnection();
-  //   };
-  // }, []);
+    purchaseUpdateSubscription = RNIap.purchaseUpdatedListener(
+      async (purchase) => {
+        //console.info("Purchase 1==>", purchase);
+        const receipt = purchase.transactionReceipt
+          ? purchase.transactionReceipt
+          : purchase.originalJson;
+        // console.info("Purchase 2==>", receipt);
+        if (receipt) {
+          try {
+            const ackResult = await RNIap.finishTransaction(purchase);
+            console.info("ackResult", ackResult);
+          } catch (ackErr) {
+            console.warn("ackErr", ackErr);
+          }
+          getPurchaseHistory();
+          setReceipt(receipt);
+          goNext(receipt, productPrice);
+        }
+      }
+    );
 
+    purchaseErrorSubscription = RNIap.purchaseErrorListener((error) => {
+      console.log("purchaseErrorListener", error);
+      Alert.alert("purchase error", JSON.stringify(error));
+    });
+  };
+  const endConnection = () => {
+    if (purchaseUpdateSubscription) {
+      purchaseUpdateSubscription.remove();
+      purchaseUpdateSubscription = null;
+    }
+    if (purchaseErrorSubscription) {
+      purchaseErrorSubscription.remove();
+      purchaseErrorSubscription = null;
+    }
+    RNIap.endConnection();
+  };
   const getPurchaseHistory = async () => {
     try {
       const purchaseHistory = await RNIap.getPurchaseHistory();
-      alert(JSON.stringify(purchaseHistory[0].purchaseToken));
-      getConsumePurchaseAndroid(purchaseHistory[0].purchaseToken);
+      console.log("PurchaseHistory", JSON.stringify(purchaseHistory.length));
+      //alert(JSON.stringify(purchaseHistory[0].purchaseToken));
+      if (purchaseHistory.length > 0) {
+        for (var i = 0; i < purchaseHistory.length; i++) {
+          getConsumePurchaseAndroid(purchaseHistory[i].purchaseToken);
+          //console.log("=============>", purchaseHistory[i].purchaseToken);
+        }
+      }
     } catch (err) {
       console.warn(err); // standardized err.code and err.message available
     }
   };
 
-  const goNext = () => {
-    Alert.alert("Receipt", receipt.purchaseToken);
+  const goNext = (receiptValue, productPrice) => {
+    console.log("$$$===>", productPrice);
+    database()
+      .ref("/users")
+      .child(user.uid)
+      .child("purchaseHistory")
+      .push({
+        orderId: JSON.parse(receiptValue).orderId,
+        productId: JSON.parse(receiptValue).productId,
+        purchaseTime: JSON.parse(receiptValue).purchaseTime,
+        purchaseToken: JSON.parse(receiptValue).purchaseToken,
+        productPrice: productPrice,
+      })
+      .then((value) => {
+        console.log("Insert Purchase Record!", JSON.stringify(value));
+        //props.navigation.navigate("MyTabs");
+      });
+    //  Alert.alert("Receipt", JSON.parse(receiptValue).purchaseToken);
+    Alert.alert("Receipt", "Payment Successfully");
   };
 
   const getItems = async () => {
@@ -112,11 +153,11 @@ const IAP = () => {
       console.warn(err.code, err.message);
     }
   };
-
+  //********* Get All Subscriptions *********
   const getSubscriptions = async () => {
     try {
       const products = await RNIap.getSubscriptions(itemSubs);
-      console.log("Products", products);
+      //console.log("Products", products);
       setProductList(products);
     } catch (err) {
       console.warn(err.code, err.message);
@@ -124,8 +165,9 @@ const IAP = () => {
   };
   const getConsumePurchaseAndroid = async (purchaseToken) => {
     try {
+      // alert("purchaseToken==========" + JSON.stringify(purchaseToken));
       const res1 = await RNIap.consumePurchaseAndroid(purchaseToken);
-      alert("res1" + JSON.stringify(res1));
+      //alert("res1" + JSON.stringify(res1));
     } catch (err) {
       console.warn(err); // standardized err.code and err.message available
     }
@@ -136,9 +178,9 @@ const IAP = () => {
         "Get available purchases (non-consumable or unconsumed consumable)"
       );
       const purchases = await RNIap.getAvailablePurchases();
-      console.info("Available purchases :: ", purchases);
+      // console.info("Available purchases :: ", purchases);
       if (purchases && purchases.length > 0) {
-        setAvailableItemsMessage(`Got ${purchases.length} items.`);
+        setAvailableItemsMessage(`Got ${JSON.stringify(purchases)} items.`);
         setReceipt(purchases[0].transactionReceipt);
       }
     } catch (err) {
@@ -148,9 +190,11 @@ const IAP = () => {
   };
 
   // Version 3 apis
-  const requestPurchase = async (sku) => {
+  const requestPurchase = async (sku, price) => {
     try {
-      RNIap.requestPurchase(sku);
+      await RNIap.requestPurchase(sku);
+      productPrice = price;
+      // setProductPrice(price);
     } catch (err) {
       console.warn(err.code, err.message);
     }
@@ -166,38 +210,41 @@ const IAP = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Text style={styles.headerTxt}>react-native-iap V3</Text>
-      </View>
+      </View> */}
       <View style={styles.content}>
         <ScrollView style={{ alignSelf: "stretch" }}>
           <View style={{ height: 50 }} />
-          <Button
+          {/* <Button
             onPress={getAvailablePurchases}
             activeOpacity={0.5}
             style={styles.btn}
             title={"Get available purchases"}
-          ></Button>
+          /> */}
 
-          <Text style={{ margin: 5, fontSize: 15, alignSelf: "center" }}>
+          {/* <Text style={{ margin: 5, fontSize: 15, alignSelf: "center" }}>
             {availableItemsMessage}
           </Text>
 
           <Text style={{ margin: 5, fontSize: 9, alignSelf: "center" }}>
-            {receipt.substring(0, 100)}
-          </Text>
-          <Button
+            {receipt}
+          </Text> */}
+
+          {/*
+          "********* Get All Subscriptions *********"
+           <Button
             onPress={getSubscriptions}
             activeOpacity={0.5}
             style={styles.btn}
             title={"Get Subscription"}
-          />
-          <Button
+          /> */}
+          {/* <Button
             onPress={getItems}
             activeOpacity={0.5}
             style={styles.btn}
             title={"Get Products"}
-          />
+          /> */}
           {productList.map((product, i) => {
             return (
               <View
@@ -206,7 +253,7 @@ const IAP = () => {
                   flexDirection: "column",
                 }}
               >
-                <Text
+                {/* <Text
                   style={{
                     marginTop: 20,
                     fontSize: 12,
@@ -217,16 +264,39 @@ const IAP = () => {
                   }}
                 >
                   {JSON.stringify(product)}
-                </Text>
-                <Button
+                </Text> */}
+                <TouchableOpacity
+                  style={styles.btn}
+                  onPress={() => {
+                    requestPurchase(
+                      product.productId,
+                      JSON.parse(product.originalJson).price
+                    );
+                  }}
+                >
+                  <View
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 15,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {"Buy " + JSON.parse(product.originalJson).price}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                {/* <Button
                   onPress={() => requestPurchase(product.productId)}
                   // onPress={(): void =>
                   //   this.requestSubscription(product.productId)
                   // }
                   activeOpacity={0.5}
                   style={styles.btn}
-                  title={"Request purchase for above product"}
-                ></Button>
+                  title={"Buy " + JSON.parse(product.originalJson).price}
+                ></Button> */}
               </View>
             );
           })}
@@ -238,6 +308,7 @@ const IAP = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
     backgroundColor: "white",
   },
   header: {
@@ -249,9 +320,8 @@ const styles = StyleSheet.create({
     color: "green",
   },
   content: {
-    flex: 80,
-    flexDirection: "column",
-    alignSelf: "stretch",
+    flex: 1,
+    justifyContent: "center",
   },
   title: {
     fontSize: 24,
@@ -259,11 +329,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     height: 48,
-    width: 240,
+    width: 200,
+    borderRadius: 10,
+    marginTop: 50,
+    justifyContent: "center",
     alignSelf: "center",
     backgroundColor: "#00c40f",
-    borderRadius: 0,
-    borderWidth: 0,
   },
   txt: {
     fontSize: 16,

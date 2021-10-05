@@ -27,107 +27,26 @@ import {
   NetworkCheck,
 } from "./src/utils/Constant";
 import Routes from "./src/navigation";
-
+import { firebase } from "@react-native-firebase/auth";
+const firebaseConfig = {
+  apiKey: "AIzaSyBaS-Bd2k_YLoPFlwYA4APITEFtdBxDc-8",
+  authDomain: "api-5702398225768468996-286864.firebaseapp.com",
+  databaseURL:
+    "https://api-5702398225768468996-286864-default-rtdb.firebaseio.com",
+  projectId: "api-5702398225768468996-286864",
+  storageBucket: "api-5702398225768468996-286864.appspot.com",
+  messagingSenderId: "846216344342",
+  appId: "1:846216344342:web:3fea7e13893bdc39d59637",
+  measurementId: "G-248Q2SLTY0",
+};
 const App: () => React$Node = () => {
-  useEffect(async () => {
+  useEffect(() => {
+    //firebase.initializeApp(firebaseConfig);
     const unsubscribe = NetInfo.addEventListener((state) => {
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
+      //console.log("Connection type", state.type);
+      //console.log("Is connected?", state.isConnected);
       NetworkCheck.isConnected = state.isConnected;
     });
-    // await RNIap.initConnection();
-    // RNIap.initConnection().then(() => {
-    //   // we make sure that "ghost" pending payment are removed
-    //   // (ghost = failed pending payment that are still marked as pending in Google's native Vending module cache)
-    //   RNIap.flushFailedPurchasesCachedAsPendingAndroid()
-    //     .catch(() => {
-    //       // exception can happen here if:
-    //       // - there are pending purchases that are still pending (we can't consume a pending purchase)
-    //       // in any case, you might not want to do anything special with the error
-    //     })
-    //     .then(() => {
-    //       RNIap.purchaseUpdatedListener(async (purchase) => {
-    //         // console.log('purchaseUpdatedListener', purchase);
-    //         const receipt = purchase.transactionReceipt;
-    //         if (purchase.productId === 'com.codiant.monthly_plan') {
-    //           console.log('Nothing to Do');
-    //         } else {
-    //           console.log('===>' + JSON.stringify(purchase.productId));
-    //           const params = {
-    //             grant_type: 'refresh_token',
-    //             client_id: CLIENT_ID,
-    //             client_secret: CLIENT_SECRET,
-    //             refresh_token: REFRESH_TOKEN,
-    //           };
-    //           commonApiAxios(
-    //             'POST',
-    //             'https://accounts.google.com/o/oauth2/token?',
-    //             params,
-    //           )
-    //             .then((response) => {
-    //               console.log('Access Token==>' + JSON.stringify(response));
-    //               getValidateReceiptAndroid(
-    //                 purchase.packageNameAndroid,
-    //                 purchase.productId,
-    //                 purchase.purchaseToken,
-    //                 response.data.access_token,
-    //                 true,
-    //               ).then((result) => {
-    //                 console.log(
-    //                   'Get Validate Receipt Android==>' +
-    //                     JSON.stringify(result),
-    //                 );
-    //               });
-    //             })
-    //             .catch((error) => {
-    //               console.log(JSON.stringify(error));
-    //             });
-    //           if (receipt) {
-    //             if (Platform.OS === 'ios') {
-    //               await RNIap.finishTransactionIOS(purchase.transactionId);
-    //             } else if (Platform.OS === 'android') {
-    //               // If consumable (can be purchased again)
-    //               // await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
-    //               // If not consumable
-    //               await RNIap.acknowledgePurchaseAndroid(
-    //                 purchase.purchaseToken,
-    //               );
-    //             }
-    //             // yourAPI.deliverOrDownloadFancyInAppPurchase(purchase.transactionReceipt)
-    //             // .then( async (deliveryResult) => {
-    //             //   if (isSuccess(deliveryResult)) {
-    //             //     // Tell the store that you have delivered what has been paid for.
-    //             //     // Failure to do this will result in the purchase being refunded on Android and
-    //             //     // the purchase event will reappear on every relaunch of the app until you succeed
-    //             //     // in doing the below. It will also be impossible for the user to purchase consumables
-    //             //     // again until you do this.
-    //             //     if (Platform.OS === 'ios') {
-    //             //       await RNIap.finishTransactionIOS(purchase.transactionId);
-    //             //     } else if (Platform.OS === 'android') {
-    //             //       // If consumable (can be purchased again)
-    //             //       await RNIap.consumePurchaseAndroid(purchase.purchaseToken);
-    //             //       // If not consumable
-    //             //       await RNIap.acknowledgePurchaseAndroid(purchase.purchaseToken);
-    //             //     }
-
-    //             //     // From react-native-iap@4.1.0 you can simplify above `method`. Try to wrap the statement with `try` and `catch` to also grab the `error` message.
-    //             //     // If consumable (can be purchased again)
-    //             //     await RNIap.finishTransaction(purchase, true);
-    //             //     // If not consumable
-    //             //     await RNIap.finishTransaction(purchase, false);
-    //             //   } else {
-    //             //     // Retry / conclude the purchase is fraudulent, etc...
-    //             //   }
-    //             // });
-    //           }
-    //         }
-    //       });
-
-    //       // this.purchaseErrorSubscription = purchaseErrorListener((error) => {
-    //       //   console.warn('purchaseErrorListener', error);
-    //       // });
-    //     });
-    // });
 
     setTimeout(() => {
       SplashScreen.hide();
