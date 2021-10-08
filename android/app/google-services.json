@@ -1,41 +1,50 @@
 {
   "project_info": {
-    "project_number": "846216344342",
-    "project_id": "api-5702398225768468996-286864",
-    "storage_bucket": "api-5702398225768468996-286864.appspot.com"
+    "project_number": "912277330827",
+    "firebase_url": "https://e-coins-328109-default-rtdb.firebaseio.com",
+    "project_id": "e-coins-328109",
+    "storage_bucket": "e-coins-328109.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:846216344342:android:29cdbf387906c94bd59637",
+        "mobilesdk_app_id": "1:912277330827:android:d16b4a42e4c1158fe5ad8e",
         "android_client_info": {
-          "package_name": "com.codiant.reactnativeboilerplate"
+          "package_name": "com.ecoins"
         }
       },
       "oauth_client": [
         {
-          "client_id": "846216344342-1p2fkjhisfa1965bjcs03ivs6ore3p02.apps.googleusercontent.com",
+          "client_id": "912277330827-jcn5qnajl3htmc53tnbqi63kne4jutn1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.codiant.reactnativeboilerplate",
+            "package_name": "com.ecoins",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "912277330827-meanui2eqjdq98vlftnflodjsa16r2lr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ecoins",
             "certificate_hash": "c453e67646fbc13d9cdb08b0ce9d99653bd4ff9d"
           }
         },
         {
-          "client_id": "846216344342-2o32kcp11f37boqk0lt5e4qhbm2tvess.apps.googleusercontent.com",
+          "client_id": "912277330827-k6j83i7k2inrd70sp6hn97v9m6cs082s.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAj5uZGr6J6NlGwieI5MLKAGXWnAxT4NKc"
+          "current_key": "AIzaSyB4qtp6S1gfdBTw0V26Pz1hSHbIXGkUxtU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "846216344342-2o32kcp11f37boqk0lt5e4qhbm2tvess.apps.googleusercontent.com",
+              "client_id": "912277330827-k6j83i7k2inrd70sp6hn97v9m6cs082s.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

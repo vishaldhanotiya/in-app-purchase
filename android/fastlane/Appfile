@@ -1,2 +1,0 @@
-json_key_file("/Users/vishal/React\ Native\ Template/In-appPurchase/android/api-5702398225768468996-286864-6ed4e84c1939.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
-package_name("com.codiant.reactnativeboilerplate") # e.g. com.krausefx.app

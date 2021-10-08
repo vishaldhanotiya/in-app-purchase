@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import IAP from "../containers/IAP";
-import Profile from "../containers/Profile";
+import Home from "./Home";
+import Profile from "./Profile";
 import Images from "../assets/Images";
 import Setting from "./Setting";
 const Tab = createBottomTabNavigator();
@@ -33,7 +33,7 @@ export default function MyTabs() {
         tabBarHideOnKeyboard: true,
       })}
     >
-      <Tab.Screen name="IAP" component={IAP} />
+      <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Setting" component={Setting} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>

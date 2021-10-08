@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import database from "@react-native-firebase/database";
 import auth from "@react-native-firebase/auth";
 
@@ -15,9 +8,9 @@ export default function Setting({ navigation }) {
   const [transactionHistory, setTransactionHistory] = useState([]);
   useEffect(() => {
     user = auth().currentUser;
-    User(user.uid);
+    User();
   }, []);
-  function User({ userId }) {
+  function User() {
     database()
       .ref("/users")
       .child(user.uid)
@@ -36,7 +29,7 @@ export default function Setting({ navigation }) {
       <View
         style={{
           justifyContent: "center",
-          padding: 10,
+          padding: 15,
           elevation: 10,
           marginTop: 10,
           marginHorizontal: 5,
@@ -52,19 +45,30 @@ export default function Setting({ navigation }) {
           </Text>
           <Text style={{ color: "black", fontSize: 16 }}>{item.orderId}</Text>
         </View>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ color: "black", fontSize: 16, fontWeight: "bold" }}>
-            {"Price: "}
-          </Text>
-          <Text style={{ color: "black", fontSize: 16 }}>
-            {" "}
-            {item.productPrice}
-          </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            marginTop: 10,
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ color: "black", fontSize: 16, fontWeight: "bold" }}>
+              {"Price: "}
+            </Text>
+            <Text style={{ color: "black", fontSize: 16 }}>
+              {" "}
+              {item.productPrice}
+            </Text>
+          </View>
+          <View>
+            <Text style={{ color: "black", fontSize: 16 }}>
+              {new Date(item.purchaseTime).toLocaleDateString() +
+                " " +
+                new Date(item.purchaseTime).toLocaleTimeString()}
+            </Text>
+          </View>
         </View>
-        {/* <View style={{ flexDirection: "row" }}>
-          <Text style={{ color: "black" }}> {"Price"}</Text>
-          <Text style={{ color: "black" }}> {item.productPrice}</Text>
-        </View> */}
       </View>
     );
   };
@@ -75,12 +79,28 @@ export default function Setting({ navigation }) {
           {"Transaction History"}
         </Text>
       </View>
-      <FlatList
-        style={{ flex: 1, padding: 10 }}
-        data={transactionHistory}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
+      <View style={{ flex: 1 }}>
+        {transactionHistory.length > 0 ? (
+          <FlatList
+            style={{ flex: 1, padding: 10 }}
+            data={transactionHistory}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+        ) : (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 200,
+            }}
+          >
+            <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+              {"No Transactions Found"}
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 }

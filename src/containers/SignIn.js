@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -11,15 +11,18 @@ import auth from "@react-native-firebase/auth";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import database from "@react-native-firebase/database";
 import NavigationService from "../navigation/NavigationService";
+import { NetworkCheck } from "../utils/Constant";
 
 const SignIn = (props) => {
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     configureGoogle();
     const user = auth().currentUser;
 
     if (user) {
-      //NavigationService.navigateToClearStack("MyTabs");
-      props.navigation.navigate("MyTabs");
+      setTimeout(() => {
+        NavigationService.navigateToClearStack("MyTabs");
+      }, 20);
       console.log("User Data: ", user);
     }
   }, []);
@@ -27,25 +30,36 @@ const SignIn = (props) => {
   const configureGoogle = async () => {
     await GoogleSignin.configure({
       webClientId:
-        "846216344342-2o32kcp11f37boqk0lt5e4qhbm2tvess.apps.googleusercontent.com",
+        "912277330827-k6j83i7k2inrd70sp6hn97v9m6cs082s.apps.googleusercontent.com",
     });
   };
   const onLogin = () => {
-    onGoogleButtonPress().then((value) => {
-      database()
-        .ref("/users")
-        .child(value.user.uid)
-        .update({
-          name: value.user.displayName,
-          email: value.user.email,
-          providerData: value.user.providerData[0],
-          photoURL: value.user.photoURL,
-        })
+    if (NetworkCheck.isConnected) {
+      setLoading(true);
+      onGoogleButtonPress()
         .then((value) => {
-          console.log("Signed in with Google!", JSON.stringify(value));
-          props.navigation.navigate("MyTabs");
+          database()
+            .ref("/users")
+            .child(value.user.uid)
+            .update({
+              name: value.user.displayName,
+              email: value.user.email,
+              providerData: value.user.providerData[0],
+              photoURL: value.user.photoURL,
+            })
+            .then((value) => {
+              setLoading(false);
+
+              console.log("Signed in with Google!", JSON.stringify(value));
+              props.navigation.navigate("MyTabs");
+            });
+        })
+        .catch(() => {
+          setLoading(false);
         });
-    });
+    } else {
+      setLoading(false);
+    }
   };
 
   const onGoogleButtonPress = async () => {
@@ -61,6 +75,21 @@ const SignIn = (props) => {
 
   return (
     <View style={styles.container}>
+      {loading ? (
+        <View
+          style={{
+            flexDirection: "row",
+            marginBottom: 25,
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text style={{ fontWeight: "bold", fontSize: 15, marginStart: 20 }}>
+            {"Please wait"}
+          </Text>
+        </View>
+      ) : null}
+
       <TouchableOpacity activeOpacity={0.9} onPress={() => onLogin()}>
         <View
           style={{

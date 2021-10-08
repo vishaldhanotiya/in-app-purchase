@@ -4,19 +4,16 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  Button,
   View,
 } from "react-native";
-
 import * as RNIap from "react-native-iap";
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import database from "@react-native-firebase/database";
 
-// App Bundle > com.dooboolab.test
 const itemSkus = Platform.select({
   ios: ["com.codiant.subscribe.monthly_plan"],
-  android: ["com.inapp.inr_10", "com.codiant.monthly_plan"],
+  android: ["com.ecoins.inr_50", "com.ecoins.inr_100"],
 });
 
 const itemSubs = Platform.select({
@@ -31,9 +28,10 @@ const itemSubs = Platform.select({
 let purchaseUpdateSubscription;
 let purchaseErrorSubscription;
 import auth from "@react-native-firebase/auth";
+import { NetworkCheck } from "../utils/Constant";
 let user = null,
   productPrice = "";
-const IAP = () => {
+const Home = () => {
   const [productList, setProductList] = useState([]);
   // const [productPrice, setProductPrice] = useState("");
   const [receipt, setReceipt] = useState("");
@@ -42,11 +40,8 @@ const IAP = () => {
 
   useEffect(() => {
     user = auth().currentUser;
-
     if (user) {
-      //NavigationService.navigateToClearStack("MyTabs");
       setUid(user.uid);
-
       console.log("User Data: ", user);
     }
     initialConfiguration();
@@ -191,12 +186,14 @@ const IAP = () => {
 
   // Version 3 apis
   const requestPurchase = async (sku, price) => {
-    try {
-      await RNIap.requestPurchase(sku);
-      productPrice = price;
-      // setProductPrice(price);
-    } catch (err) {
-      console.warn(err.code, err.message);
+    if (NetworkCheck.isConnected) {
+      try {
+        await RNIap.requestPurchase(sku);
+        productPrice = price;
+        // setProductPrice(price);
+      } catch (err) {
+        console.warn(err.code, err.message);
+      }
     }
   };
 
@@ -342,4 +339,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default IAP;
+export default Home;

@@ -1,4 +1,4 @@
-package com.codiant.reactnativeboilerplate;
+package com.ecoins;
 
 import android.os.Bundle;
 

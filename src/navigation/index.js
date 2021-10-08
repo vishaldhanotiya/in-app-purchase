@@ -4,7 +4,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import NavigationService from "./NavigationService";
 import MyTabs from "../containers/MyTabs";
-import Splash from "../containers/Splash";
 import SignIn from "../containers/SignIn";
 import Profile from "../containers/Profile";
 
@@ -16,9 +15,9 @@ const MainStack = () => {
       initialRouteName="SignIn"
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="MyTabs" component={MyTabs} />
       <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="SignIn" component={SignIn} />
     </Stack.Navigator>
   );
 };
