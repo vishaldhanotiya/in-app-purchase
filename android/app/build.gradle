@@ -199,7 +199,6 @@ android {
 //            signingConfig signingConfigs.release
 //            versionNameSuffix "-prod"
 //            //targetSdkVersion rootProject.ext.targetSdkVersion
-//           // resValue "string", "build_config_package", "com.codiant.reactnativeboilerplate"
 //            dimension "env"
 //        }
 //    }

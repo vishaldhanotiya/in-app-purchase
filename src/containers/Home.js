@@ -12,16 +12,16 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import database from "@react-native-firebase/database";
 
 const itemSkus = Platform.select({
-  ios: ["com.codiant.subscribe.monthly_plan"],
+  ios: ["com.test.subscribe.monthly_plan"],
   android: ["com.ecoins.inr_50", "com.ecoins.inr_100"],
 });
 
 const itemSubs = Platform.select({
   android: [
-    "com.codiant.subscribe.monthly_plan",
-    "com.codiant.subscribe.quarterly_plan",
-    "com.codiant.subscribe.half_yearly_plan",
-    "com.codiant.subscribe.yearly_plan",
+    "com.test.subscribe.monthly_plan",
+    "com.test.subscribe.quarterly_plan",
+    "com.test.subscribe.half_yearly_plan",
+    "com.test.subscribe.yearly_plan",
   ],
 });
 

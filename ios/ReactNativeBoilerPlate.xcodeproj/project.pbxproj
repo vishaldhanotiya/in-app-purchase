@@ -392,7 +392,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.codiant.InAppPurchase;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.InAppPurchase;
 				PRODUCT_NAME = ReactNativeBoilerPlate;
 				PROVISIONING_PROFILE_SPECIFIER = "Divvito Prod Aus Dev";
 				SWIFT_OBJC_BRIDGING_HEADER = "ReactNativeBoilerPlate-Bridging-Header.h";
@@ -419,7 +419,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.codiant.InAppPurchase;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.InAppPurchase;
 				PRODUCT_NAME = ReactNativeBoilerPlate;
 				PROVISIONING_PROFILE_SPECIFIER = "InAppPurchaseExample-AppStore";
 				SWIFT_OBJC_BRIDGING_HEADER = "ReactNativeBoilerPlate-Bridging-Header.h";
@@ -558,7 +558,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.codiant.InAppPurchase;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.InAppPurchase;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "InAppPurchaseExample-Development";
 				SWIFT_OBJC_BRIDGING_HEADER = "ReactNativeBoilerPlate Prod-Bridging-Header.h";
@@ -584,7 +584,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.codiant.InAppPurchase;
+				PRODUCT_BUNDLE_IDENTIFIER = com.test.InAppPurchase;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "InAppPurchaseExample-AppStore";
 				SWIFT_OBJC_BRIDGING_HEADER = "ReactNativeBoilerPlate Prod-Bridging-Header.h";
